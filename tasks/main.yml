@@ -1,0 +1,99 @@
+---
+# tasks file for ca
+- name: check if required variables are set
+  assert:
+    that:
+      - ca_common_name is defined
+      - ca_passphrase is defined
+
+- name: install requirements
+  pip:
+    name: pyopenssl
+    state: present
+  register: ca_install_requirements
+  until: ca_install_requirements is succeeded
+  retries: 3
+
+- name: install openssl
+  package:
+    name: "{{ ca_packages }}"
+    state: "{{ ca_package_state }}"
+  register: ca_install_openssl
+  until: ca_install_openssl is succeeded
+  retries: 3
+
+- name: generate ca key
+  openssl_privatekey:
+    path: "{{ ca_openssl_path }}/private/ca.pem"
+    passphrase: "{{ ca_passphrase }}"
+    cipher: aes256
+
+- name: generate ca certificate signing request
+  openssl_csr:
+    path: "{{ ca_openssl_path }}/ca.csr"
+    privatekey_path: "{{ ca_openssl_path }}/private/ca.pem"
+    privatekey_passphrase: "{{ ca_passphrase }}"
+    common_name: "{{ ca_common_name }}"
+
+- name: generate requested key
+  openssl_privatekey:
+    path: "{{ ca_openssl_path }}/private/{{ item.name }}.pem"
+    passphrase: "{{ item.passphrase }}"
+    cipher: aes256
+  with_items:
+    - "{{ ca_requests }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - ca_requests is defined
+
+- name: generate requested certificate signing request
+  openssl_csr:
+    path: "{{ ca_openssl_path }}/{{ item.name }}.csr"
+    privatekey_path: "{{ ca_openssl_path }}/private/{{ item.name }}.pem"
+    privatekey_passphrase: "{{ item.passphrase }}"
+    common_name: "{{ item.name }}"
+  with_items:
+    - "{{ ca_requests }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - ca_requests is defined
+
+- name: generate certificate
+  openssl_certificate:
+    privatekey_path: "{{ ca_openssl_path }}/private/{{ item.name }}.pem"
+    path: "{{ ca_openssl_path }}/certs/{{ item.name }}.crt"
+    csr_path: "{{ ca_openssl_path }}/{{ item.name }}.csr"
+    privatekey_passphrase: "{{ item.passphrase }}"
+    provider: selfsigned
+  with_items:
+    - name: ca
+      passphrase: "{{ ca_passphrase }}"
+    - "{{ ca_requests | default([omit]) }}"
+  loop_control:
+    label: "{{ item.name }}"
+
+- name: ensure publication location exists
+  file:
+    path: "{{ ca_publication_location }}"
+    state: directory
+    mode: "0755"
+    owner: root
+    group: root
+  when:
+    - ca_publication_location is defined
+
+- name: publish certificate
+  copy:
+    src: "{{ ca_openssl_path }}/certs/{{ item.name }}.crt"
+    dest: "{{ ca_publication_location }}/{{ item.name }}.crt"
+    mode: "0644"
+    remote_src: yes
+  with_items:
+    - name: ca
+    - "{{ ca_requests | default([omit]) }}"
+  loop_control:
+    label: "{{ item.name }}"
+  when:
+    - ca_publication_location is defined

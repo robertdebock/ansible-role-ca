@@ -1,0 +1,12 @@
+---
+# vars file for ca
+_ca_packages:
+  default:
+    - openssl
+
+ca_packages: "{{ _ca_packages[ansible_distribution ~ '-' ~ ansible_distribution_major_version] | default(_ca_packages[ansible_distribution] | default(_ca_packages['default'])) }}"
+
+_ca_openssl_path:
+  default: /etc/pki/tls
+
+ca_openssl_path: "{{ _ca_openssl_path[ansible_distribution] | default(_ca_openssl_path['default']) }}"

@@ -1,0 +1,25 @@
+---
+# defaults file for ca
+
+# A passphrase for the CA key.
+ca_passphrase: SuP3rS3creT
+
+# The common name for the CA.
+ca_common_name: example.com
+
+ca_requests:
+  - name: certificate1.example.com
+    passphrase: S3creT
+
+# Where to publish the certificates, normally a webserver location.
+# If not specified, certificates will not be published.
+# {{ httpd_data_directory }} is inheritted from the role robertdebock.httpd.
+ca_publication_location: {{ httpd_data_directory }}
+
+# To update packages this role places on the system, set `ca_package_state` to `latest`.
+ca_package_state: present
+
+# Some Docker containers do not allow managing services, rebooting and writing
+# to some locations in /etc. The role skips tasks that will typically fail in
+# Docker. With this parameter you can tell the role to -not- skip these tasks.
+ca_ignore_docker: yes
