@@ -14,7 +14,7 @@ ca_requests:
 # Where to publish the certificates, normally a webserver location.
 # If not specified, certificates will not be published.
 # {{ httpd_data_directory }} is inheritted from the role robertdebock.httpd.
-ca_publication_location: {{ httpd_data_directory }}
+ca_publication_location: "{{ httpd_data_directory }}"
 
 # To update packages this role places on the system, set `ca_package_state` to `latest`.
 ca_package_state: present
