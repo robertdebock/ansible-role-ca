@@ -7,6 +7,13 @@ _ca_packages:
 ca_packages: "{{ _ca_packages[ansible_distribution ~ '-' ~ ansible_distribution_major_version] | default(_ca_packages[ansible_distribution] | default(_ca_packages['default'])) }}"
 
 _ca_openssl_path:
-  default: /etc/pki/tls
+  Alpine: /etc/ssl
+  Archlinux: /etc/ssl
+  CentOS: /etc/pki/tls
+  Debian: /etc/ssl
+  Fedora: /etc/pki/tls
+  openSUSE Leap: /etc/ssl
+  openSUSE Tumbleweed: /etc/ssl
+  Ubuntu: /etc/ssl
 
 ca_openssl_path: "{{ _ca_openssl_path[ansible_distribution] | default(_ca_openssl_path['default']) }}"
