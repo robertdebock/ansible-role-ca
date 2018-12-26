@@ -35,6 +35,14 @@
     privatekey_passphrase: "{{ ca_passphrase }}"
     common_name: "{{ ca_common_name }}"
 
+- name: generate ca certificate
+  openssl_certificate:
+    path: "{{ ca_openssl_path }}/certs/ca.crt"
+    privatekey_path: "{{ ca_openssl_path }}/private/ca.pem"
+    privatekey_passphrase: "{{ ca_passphrase }}"
+    csr_path: "{{ ca_openssl_path }}/ca.csr"
+    provider: selfsigned
+
 - name: generate requested key
   openssl_privatekey:
     path: "{{ ca_openssl_path }}/private/{{ item.name }}.pem"
