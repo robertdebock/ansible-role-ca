@@ -50,7 +50,7 @@ ca_requests:
 # Where to publish the certificates, normally a webserver location.
 # If not specified, certificates will not be published.
 # {{ httpd_data_directory }} is inheritted from the role robertdebock.httpd.
-ca_publication_location: {{ httpd_data_directory }}
+ca_publication_location: "{{ httpd_data_directory }}/pub"
 
 # To update packages this role places on the system, set `ca_package_state` to `latest`.
 ca_package_state: present
@@ -97,7 +97,7 @@ This role has been tested against the following distributions and Ansible versio
 |alpine-edge*|yes|yes|yes*|
 |alpine-latest|yes|yes|yes*|
 |archlinux|yes|yes|yes*|
-|centos-6|yes|yes|yes*|
+|centos-6|no|no|no*|
 |centos-latest|yes|yes|yes*|
 |debian-latest|yes|yes|yes*|
 |debian-stable|yes|yes|yes*|
