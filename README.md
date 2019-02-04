@@ -19,6 +19,7 @@ This example is taken from `molecule/default/playbook.yml`:
   vars:
     ca_requests:
       - name: my_ca.example.com
+        passphrase: WoNtT3L1
         country_name: NL
         email_address: robert@meinit.nl
         organization_name: Some Corporation
@@ -71,6 +72,15 @@ ca_publication_location: "{{ httpd_data_directory }}/pub"
 # If you need a CA certificate somewhere else, simple use something like this:
 # ca_openssl_path: /my/preferred/path
 ca_openssl_path: "{{ _ca_openssl_path[ansible_distribution] | default(_ca_openssl_path['default']) }}"
+
+# The names of the generated files are set to a sane default, but if you need
+# to change the for your application, you can overwrite the values. These paths
+# are relative to `ca_openssl_path`.
+ca_private_path: private
+ca_certs_path: certs
+ca_privatekey_path: "{{ ca_private_path }}/ca.pem"
+ca_csr_path: ca.csr
+ca_certificate_path: "{{ ca_certs_path }}/ca.crt"
 
 # To update packages this role places on the system, set `ca_package_state` to `latest`.
 ca_package_state: present

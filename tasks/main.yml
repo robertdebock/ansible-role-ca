@@ -33,14 +33,14 @@
 
 - name: generate ca key
   openssl_privatekey:
-    path: "{{ ca_openssl_path }}/private/ca.pem"
+    path: "{{ ca_openssl_path }}/{{ ca_privatekey_path }}"
     passphrase: "{{ ca_passphrase }}"
     cipher: aes256
 
 - name: generate ca certificate signing request
   openssl_csr:
-    path: "{{ ca_openssl_path }}/ca.csr"
-    privatekey_path: "{{ ca_openssl_path }}/private/ca.pem"
+    path: "{{ ca_openssl_path }}/{{ ca_csr_path }}"
+    privatekey_path: "{{ ca_openssl_path }}/{{ ca_privatekey_path }}"
     privatekey_passphrase: "{{ ca_passphrase }}"
     common_name: "{{ ca_common_name }}"
     country_name: "{{ ca_country_name | default(omit) }}"
@@ -51,15 +51,15 @@
 
 - name: generate ca certificate
   openssl_certificate:
-    path: "{{ ca_openssl_path }}/certs/ca.crt"
-    privatekey_path: "{{ ca_openssl_path }}/private/ca.pem"
+    path: "{{ ca_openssl_path }}/{{ ca_certificate_path }}"
+    privatekey_path: "{{ ca_openssl_path }}/{{ ca_privatekey_path }}"
     privatekey_passphrase: "{{ ca_passphrase }}"
-    csr_path: "{{ ca_openssl_path }}/ca.csr"
+    csr_path: "{{ ca_openssl_path }}/{{ ca_csr_path }}"
     provider: selfsigned
 
 - name: generate requested key
   openssl_privatekey:
-    path: "{{ ca_openssl_path }}/private/{{ item.name }}.pem"
+    path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name }}.pem"
     passphrase: "{{ item.passphrase }}"
     cipher: aes256
   with_items:
@@ -72,7 +72,7 @@
 - name: generate requested certificate signing request
   openssl_csr:
     path: "{{ ca_openssl_path }}/{{ item.name }}.csr"
-    privatekey_path: "{{ ca_openssl_path }}/private/{{ item.name }}.pem"
+    privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name }}.pem"
     privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
     common_name: "{{ item.name }}"
     country_name: "{{ item.country_name | default(omit) }}"
@@ -88,8 +88,8 @@
 
 - name: generate certificate
   openssl_certificate:
-    privatekey_path: "{{ ca_openssl_path }}/private/{{ item.name }}.pem"
-    path: "{{ ca_openssl_path }}/certs/{{ item.name }}.crt"
+    privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name }}.pem"
+    path: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name }}.crt"
     csr_path: "{{ ca_openssl_path }}/{{ item.name }}.csr"
     privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
     provider: selfsigned
@@ -112,7 +112,7 @@
 
 - name: publish certificate
   copy:
-    src: "{{ ca_openssl_path }}/certs/{{ item.name }}.crt"
+    src: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name }}.crt"
     dest: "{{ ca_publication_location }}/{{ item.name }}.crt"
     mode: "0644"
     remote_src: yes
