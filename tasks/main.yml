@@ -1,15 +1,24 @@
 ---
 # tasks file for ca
-- name: check if required variables are set
+- name: test veriables and environment
   assert:
     that:
-      - ca_common_name is defined
       - ca_passphrase is defined
+      - ca_common_name is defined
+      - ca_publication_location is defined
+      - ca_package_state == "present" or
+        ca_package_state == "absent" or
+        ca_package_state == "latest"
+      - ca_ignore_docker is defined
+      - ca_ignore_docker or
+        not ca_ignore_docker
+      - ca_packages is defined
+      - ca_openssl_path is defined
 
 - name: install requirements
   pip:
     name: pyopenssl
-    state: present
+    state: "{{ ca_package_state }}"
   register: ca_install_requirements
   until: ca_install_requirements is succeeded
   retries: 3
@@ -34,6 +43,11 @@
     privatekey_path: "{{ ca_openssl_path }}/private/ca.pem"
     privatekey_passphrase: "{{ ca_passphrase }}"
     common_name: "{{ ca_common_name }}"
+    country_name: "{{ ca_country_name | default(omit) }}"
+    email_address: "{{ ca_email_address | default(omit) }}"
+    organization_name: "{{ ca_organization_name | default(omit) }}"
+    organizational_unit_name: "{{ ca_organizational_unit_name | default(omit) }}"
+    state_or_province_name: "{{ ca_state_or_province_name | default(omit) }}"
 
 - name: generate ca certificate
   openssl_certificate:
@@ -59,8 +73,12 @@
   openssl_csr:
     path: "{{ ca_openssl_path }}/{{ item.name }}.csr"
     privatekey_path: "{{ ca_openssl_path }}/private/{{ item.name }}.pem"
-    privatekey_passphrase: "{{ item.passphrase }}"
+    privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
     common_name: "{{ item.name }}"
+    country_name: "{{ item.country_name | default(omit) }}"
+    email_address: "{{ item.email_address | default(omit) }}"
+    organization_name: "{{ item.organization_name | default(omit) }}"
+    organizational_unit_name: "{{ item.organizational_unit_name | default(omit) }}"
   with_items:
     - "{{ ca_requests }}"
   loop_control:
@@ -73,14 +91,14 @@
     privatekey_path: "{{ ca_openssl_path }}/private/{{ item.name }}.pem"
     path: "{{ ca_openssl_path }}/certs/{{ item.name }}.crt"
     csr_path: "{{ ca_openssl_path }}/{{ item.name }}.csr"
-    privatekey_passphrase: "{{ item.passphrase }}"
+    privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
     provider: selfsigned
   with_items:
-    - name: ca
-      passphrase: "{{ ca_passphrase }}"
-    - "{{ ca_requests | default([omit]) }}"
+    - "{{ ca_requests }}"
   loop_control:
     label: "{{ item.name }}"
+  when:
+    - ca_requests is defined
 
 - name: ensure publication location exists
   file:
@@ -99,9 +117,9 @@
     mode: "0644"
     remote_src: yes
   with_items:
-    - name: ca
-    - "{{ ca_requests | default([omit]) }}"
+    - "{{ ca_requests }}"
   loop_control:
     label: "{{ item.name }}"
   when:
+    - ca_requests is defined
     - ca_publication_location is defined

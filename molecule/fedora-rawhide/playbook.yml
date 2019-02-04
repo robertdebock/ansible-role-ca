@@ -1,11 +1,17 @@
 ---
 - name: Converge
   hosts: all
-  gather_facts: false
-  become: true
+  gather_facts: no
+  become: yes
 
   vars:
-    httpd_ignore_docker: no
+    ca_requests:
+      - name: my_ca.example.com
+        passphrase: WoNtT3L1
+        country_name: NL
+        email_address: robert@meinit.nl
+        organization_name: Some Corporation
+        organizational_unit_name: Department X
 
   roles:
     - role: robertdebock.bootstrap
