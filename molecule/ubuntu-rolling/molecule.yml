@@ -8,8 +8,8 @@ driver:
 lint:
   name: yamllint
 platforms:
-  - name: ca-ubuntu-artful
-    image: ubuntu:artful
+  - name: ca-ubuntu-rolling
+    image: ubuntu:rolling
 provisioner:
   name: ansible
   inventory:
@@ -20,7 +20,7 @@ provisioner:
   lint:
     name: ansible-lint
 scenario:
-  name: ubuntu-artful
+  name: ubuntu-rolling
 verifier:
   name: goss
   lint:
