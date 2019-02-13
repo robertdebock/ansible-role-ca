@@ -20,6 +20,7 @@ This example is taken from `molecule/default/playbook.yml`:
     ca_requests:
       - name: my_ca.example.com
         passphrase: WoNtT3L1
+        cipher: aes256
         country_name: NL
         email_address: robert@meinit.nl
         organization_name: Some Corporation
