@@ -61,11 +61,13 @@ ca_state_or_province_name: Utrecht
 ca_requests:
   - name: certificate1.example.com
     passphrase: S3creT
+    cipher: aes256
+  - name: certificate2.example.com
 
 # Where to publish the certificates, normally a webserver location.
 # If not specified, certificates will not be published.
 # {{ httpd_data_directory }} is inheritted from the role robertdebock.httpd.
-ca_publication_location: "{{ httpd_data_directory }}/pub"
+ca_publication_location: "{{ httpd_data_directory | default('/tmp') }}/pub"
 
 # Where do the certificates need to be stored? By default the distribution
 # preferred locations are used (see `vars/main.yml`, under `_ca_openssl_path`.
