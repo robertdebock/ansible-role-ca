@@ -36,7 +36,6 @@
     state: directory
     recurse: yes
   with_items:
-    - "{{ ca_openssl_path }}"
     - "{{ ca_openssl_path }}/{{ ca_private_path }}"
     - "{{ ca_openssl_path }}/{{ ca_certs_path }}"
 
