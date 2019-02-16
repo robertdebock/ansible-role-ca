@@ -32,7 +32,7 @@
 
 - name: ensure openssl_path exists
   file:
-    path: "{{ ca_openssl_path }}"
+    path: "{{ item }}"
     state: directory
     recurse: yes
   with_items:
