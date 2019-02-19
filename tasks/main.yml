@@ -65,14 +65,6 @@
     csr_path: "{{ ca_openssl_path }}/{{ ca_csr_path }}"
     provider: selfsigned
 
-- name: ensure paths exists.
-  file:
-    path: "{{ item }}"
-    state: directory
-  with_items:
-    - "{{ ca_openssl_path }}/{{ ca_certs_path }}"
-    - "{{ ca_openssl_path }}/{{ ca_private_path }}"
-
 - name: generate requested key
   openssl_privatekey:
     path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name }}.pem"
