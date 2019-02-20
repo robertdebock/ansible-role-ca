@@ -60,10 +60,10 @@ ca_organizational_unit_name: Even less
 ca_state_or_province_name: Utrecht
 
 ca_requests:
-  - name: certificate1.example.com
-    passphrase: S3creT
-    cipher: aes256
-  - name: certificate2.example.com
+  - name: "{{ ansible_fqdn }}"
+  # - name: certificate1.example.com
+  #   passphrase: S3creT
+  #   cipher: aes256
 
 # Where to publish the certificates, normally a webserver location.
 # If not specified, certificates will not be published.
