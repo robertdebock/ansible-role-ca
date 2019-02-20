@@ -67,44 +67,47 @@
 
 - name: generate requested key
   openssl_privatekey:
-    path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name }}.pem"
+    path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name | default(item) }}.pem"
     passphrase: "{{ item.passphrase | default(omit) }}"
     cipher: "{{ item.cipher | default(omit) }}"
   with_items:
     - "{{ ca_requests }}"
+    - "{{ ansible_play_hosts_all }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.name | default(item) }}"
   when:
     - ca_requests is defined
 
 - name: generate requested certificate signing request
   openssl_csr:
-    path: "{{ ca_openssl_path }}/{{ item.name }}.csr"
-    privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name }}.pem"
+    path: "{{ ca_openssl_path }}/{{ item.name | default(item) }}.csr"
+    privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name | default(item) }}.pem"
     privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
-    common_name: "{{ item.name }}"
+    common_name: "{{ item.name | default(item) }}"
     country_name: "{{ item.country_name | default(omit) }}"
     email_address: "{{ item.email_address | default(omit) }}"
     organization_name: "{{ item.organization_name | default(omit) }}"
     organizational_unit_name: "{{ item.organizational_unit_name | default(omit) }}"
   with_items:
     - "{{ ca_requests }}"
+    - "{{ ansible_play_hosts_all }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.name | default(item) }}"
   when:
     - ca_requests is defined
 
 - name: generate certificate
   openssl_certificate:
-    privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name }}.pem"
-    path: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name }}.crt"
-    csr_path: "{{ ca_openssl_path }}/{{ item.name }}.csr"
+    privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name | default(item) }}.pem"
+    path: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
+    csr_path: "{{ ca_openssl_path }}/{{ item.name | default(item) }}.csr"
     privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
     provider: selfsigned
   with_items:
     - "{{ ca_requests }}"
+    - "{{ ansible_play_hosts_all }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.name | default(item) }}"
   when:
     - ca_requests is defined
 
@@ -120,14 +123,15 @@
 
 - name: publish certificate
   copy:
-    src: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name }}.crt"
-    dest: "{{ ca_publication_location }}/{{ item.name }}.crt"
+    src: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
+    dest: "{{ ca_publication_location }}/{{ item.name | default(item) }}.crt"
     mode: "0644"
     remote_src: yes
   with_items:
     - "{{ ca_requests }}"
+    - "{{ ansible_play_hosts_all }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.name | default(item) }}"
   when:
     - ca_requests is defined
     - ca_publication_location is defined

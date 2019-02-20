@@ -14,11 +14,23 @@ ca_organization_name: Very little
 ca_organizational_unit_name: Even less
 ca_state_or_province_name: Utrecht
 
-ca_requests:
-  - name: certificate1.example.com
-    passphrase: S3creT
-    cipher: aes256
-  - name: certificate2.example.com
+# There are two formats to request a key and certificate:
+# 1. With details: (Includes `name:`)
+# ca_requests:
+#   - name: certificate1.example.com
+#     passphrase: S3creT
+#     cipher: aes256
+
+# 2. Without details: (Does not include `name:`)
+# ca_requests:
+#   - "{{ ansible_fqdn }}"
+
+# You can also mix these formats:
+# ca_requests:
+#   - name: certificate1.example.com
+#     passphrase: S3creT
+#     cipher: aes256
+#   - "{{ ansible_fqdn }}"
 
 # Where to publish the certificates, normally a webserver location.
 # If not specified, certificates will not be published.
