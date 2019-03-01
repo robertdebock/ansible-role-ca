@@ -18,6 +18,7 @@ This example is taken from `molecule/default/playbook.yml`:
 
   vars:
     ca_requests:
+      - "{{ ansible_fqdn }}"
       - name: my_ca.example.com
         passphrase: WoNtT3L1
         cipher: aes256
@@ -59,11 +60,23 @@ ca_organization_name: Very little
 ca_organizational_unit_name: Even less
 ca_state_or_province_name: Utrecht
 
-ca_requests:
-  - name: "{{ ansible_fqdn }}"
-  # - name: certificate1.example.com
-  #   passphrase: S3creT
-  #   cipher: aes256
+# There are two formats to request a key and certificate:
+# 1. With details: (Includes `name:`)
+# ca_requests:
+#   - name: certificate1.example.com
+#     passphrase: S3creT
+#     cipher: aes256
+
+# 2. Without details: (Does not include `name:`)
+# ca_requests:
+#   - "{{ ansible_fqdn }}"
+
+# You can also mix these formats:
+# ca_requests:
+#   - name: certificate1.example.com
+#     passphrase: S3creT
+#     cipher: aes256
+#   - "{{ ansible_fqdn }}"
 
 # Where to publish the certificates, normally a webserver location.
 # If not specified, certificates will not be published.
@@ -140,7 +153,6 @@ This role has been tested against the following distributions and Ansible versio
 |fedora-latest|yes|yes|yes*|
 |fedora-rawhide*|yes|yes|yes*|
 |opensuse-leap|yes|yes|yes*|
-|opensuse-tumbleweed|yes|yes|yes*|
 |ubuntu-devel*|yes|yes|yes*|
 |ubuntu-latest|yes|yes|yes*|
 |ubuntu-rolling|yes|yes|yes*|
