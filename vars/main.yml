@@ -13,7 +13,6 @@ _ca_openssl_path:
   Debian: /etc/ssl
   Fedora: /etc/pki/tls
   openSUSE Leap: /etc/ssl
-  openSUSE Tumbleweed: /etc/ssl
   Ubuntu: /etc/ssl
 
 # The ca_openssl_path is determined in the `defaults/main.yml`, so users may
