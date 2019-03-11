@@ -96,9 +96,6 @@ ca_certs_path: certs
 ca_privatekey_path: "{{ ca_private_path }}/ca.pem"
 ca_csr_path: ca.csr
 ca_certificate_path: "{{ ca_certs_path }}/ca.crt"
-
-# To update packages this role places on the system, set `ca_package_state` to `latest`.
-ca_package_state: present
 ```
 
 Requirements

@@ -17,7 +17,7 @@
 - name: install requirements
   pip:
     name: pyopenssl
-    state: "{{ ca_package_state }}"
+    state: present
   register: ca_install_requirements
   until: ca_install_requirements is succeeded
   retries: 3
@@ -25,7 +25,7 @@
 - name: install openssl
   package:
     name: "{{ ca_packages }}"
-    state: "{{ ca_package_state }}"
+    state: present
   register: ca_install_openssl
   until: ca_install_openssl is succeeded
   retries: 3
