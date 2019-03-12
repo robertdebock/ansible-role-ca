@@ -5,9 +5,6 @@
     that:
       - ca_passphrase is defined
       - ca_common_name is defined
-      - ca_package_state == "present" or
-        ca_package_state == "absent" or
-        ca_package_state == "latest"
       - ca_ignore_docker is defined
       - ca_ignore_docker or
         not ca_ignore_docker
