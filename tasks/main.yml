@@ -5,9 +5,6 @@
     that:
       - ca_passphrase is defined
       - ca_common_name is defined
-      - ca_ignore_docker is defined
-      - ca_ignore_docker or
-        not ca_ignore_docker
       - ca_packages is defined
       - ca_openssl_path is defined
 
