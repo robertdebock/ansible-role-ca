@@ -11,7 +11,7 @@ env:
   - version="" distro="alpine-edge"
   - version="devel" distro="alpine-edge"
   - version=">=2.7,<2.8" distro="archlinux"
-  - version="" distro="archlinux" expecation="fail"
+  - version="" distro="archlinux" expectation="fail"
   - version="devel" distro="archlinux"
   - version=">=2.7,<2.8" distro="centos-6" expectation="fail"
   - version="" distro="centos-6" expectation="fail"
