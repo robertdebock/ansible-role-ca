@@ -98,7 +98,7 @@ ca_publication_location: "{{ httpd_data_directory | default('/tmp') }}/pub"
 # preferred locations are used (see `vars/main.yml`, under `_ca_openssl_path`.
 # If you need a CA certificate somewhere else, simple use something like this:
 # ca_openssl_path: /my/preferred/path
-ca_openssl_path: "{{ _ca_openssl_path[ansible_distribution] | default(_ca_openssl_path['default']) }}"
+ca_openssl_path: "{{ _ca_openssl_path[ansible_os_family] | default(_ca_openssl_path['default']) }}"
 
 # The names of the generated files are set to a sane default, but if you need
 # to change the for your application, you can overwrite the values. These paths
@@ -126,6 +126,20 @@ The following roles can be installed to ensure all requirements are met, using `
 - robertdebock.python_pip
 - robertdebock.httpd
 
+```
+
+This role uses the following modules:
+```yaml
+---
+- assert
+- copy
+- file
+- openssl_certificate
+- openssl_csr
+- openssl_privatekey
+- package
+- pip
+- service
 ```
 
 Context
@@ -159,6 +173,9 @@ This role has been tested against the following distributions and Ansible versio
 |ubuntu-rolling|yes|yes|yes*|
 
 A single star means the build may fail, it's marked as an experimental build.
+
+
+
 
 Testing
 -------
