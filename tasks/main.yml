@@ -1,13 +1,5 @@
 ---
 # tasks file for ca
-- name: test veriables and environment
-  assert:
-    that:
-      - ca_passphrase is defined
-      - ca_common_name is defined
-      - ca_packages is defined
-      - ca_openssl_path is defined
-
 - name: install requirements
   pip:
     name: pyopenssl
