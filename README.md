@@ -220,7 +220,6 @@ This role uses the following modules:
 - openssl_privatekey
 - package
 - pip
-- service
 ```
 
 License
