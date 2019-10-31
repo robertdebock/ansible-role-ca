@@ -1,8 +1,0 @@
----
-# handlers file for ca
-- name: restart ca
-  service:
-    name: "{{ ca_service }}"
-    state: restarted
-  when:
-    - ansible_virtualization_type != "docker"
