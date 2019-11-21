@@ -34,7 +34,6 @@ galaxy_info:
     - certificate
     - authority
     - openssl
-    - alpine
     - archlinux
     - centos
     - debian
