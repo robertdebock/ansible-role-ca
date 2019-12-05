@@ -170,7 +170,6 @@ Some variarations of the build matrix do not work. These are the variations and 
 | Alpine | Depencency ansible-role-httpd does not work on Alpine. |
 
 
-
 Testing
 -------
 
