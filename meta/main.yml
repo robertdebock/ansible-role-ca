@@ -36,6 +36,5 @@ galaxy_info:
     - openssl
     - archlinux
     - centos
-    - rhel
 
 dependencies: []
