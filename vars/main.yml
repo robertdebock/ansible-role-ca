@@ -4,7 +4,6 @@ ca_packages: openssl
 
 _ca_openssl_path:
   Alpine: /etc/ssl
-  Archlinux: /etc/ssl
   Debian: /etc/ssl
   RedHat: /etc/pki/tls
   Suse: /etc/ssl
