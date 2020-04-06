@@ -16,4 +16,4 @@
         organizational_unit_name: Department X
 
   roles:
-    - ansible-role-ca
+    - role: ansible-role-ca

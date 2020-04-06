@@ -28,7 +28,7 @@ This example is taken from `molecule/resources/converge.yml` and is tested on ea
         organizational_unit_name: Department X
 
   roles:
-    - robertdebock.ca
+    - role: robertdebock.ca
 ```
 
 The machine may need to be prepared using `molecule/resources/prepare.yml`:
