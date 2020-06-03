@@ -44,6 +44,10 @@ The machine may need to be prepared using `molecule/resources/prepare.yml`:
     - role: robertdebock.buildtools
     - role: robertdebock.epel
     - role: robertdebock.python_pip
+    - role: robertdebock.openssl
+      openssl_items:
+        - name: apache-httpd
+          common_name: "{{ ansible_fqdn }}"
     - role: robertdebock.httpd
 ```
 
@@ -133,8 +137,9 @@ The following roles can be installed to ensure all requirements are met, using `
 - robertdebock.bootstrap
 - robertdebock.buildtools
 - robertdebock.epel
-- robertdebock.python_pip
 - robertdebock.httpd
+- robertdebock.openssl
+- robertdebock.python_pip
 
 ```
 
@@ -147,7 +152,7 @@ Here is an overview of related roles:
 
 ## Compatibility
 
-This role has been tested on these [container images](https://hub.docker.com/):
+This role has been tested on these [container images](https://hub.docker.com/u/robertdebock):
 
 |container|tags|
 |---------|----|
@@ -155,7 +160,6 @@ This role has been tested on these [container images](https://hub.docker.com/):
 |el|7, 8|
 |debian|buster, bullseye|
 |fedora|31, 32|
-|opensuse|all|
 |ubuntu|focal, bionic, xenial|
 
 The minimum version of Ansible required is 2.8 but tests have been done to:

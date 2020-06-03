@@ -2,5 +2,6 @@
 - robertdebock.bootstrap
 - robertdebock.buildtools
 - robertdebock.epel
-- robertdebock.python_pip
 - robertdebock.httpd
+- robertdebock.openssl
+- robertdebock.python_pip
