@@ -95,7 +95,7 @@
   file:
     path: "{{ ca_publication_location }}"
     state: directory
-    mode: "0755"
+    mode: "755"
     owner: root
     group: root
   when:
@@ -105,7 +105,7 @@
   copy:
     src: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
     dest: "{{ ca_publication_location }}/{{ item.name | default(item) }}.crt"
-    mode: "0644"
+    mode: "644"
     remote_src: yes
   loop: "{{ ca_requests }}"
   loop_control:
