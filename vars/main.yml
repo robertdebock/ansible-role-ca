@@ -1,7 +1,5 @@
 ---
 # vars file for ca
-ca_packages: openssl
-
 _ca_openssl_path:
   Alpine: /etc/ssl
   Debian: /etc/ssl
