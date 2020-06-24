@@ -1,5 +1,8 @@
 ---
 # tasks file for ca
+- name: include assert.yml
+  include_tasks: assert.yml
+
 - name: ensure openssl_path exists
   file:
     path: "{{ item }}"

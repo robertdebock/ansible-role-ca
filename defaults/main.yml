@@ -20,7 +20,7 @@ ca_state_or_province_name: Utrecht
 #   - name: certificate1.example.com
 #     passphrase: S3creT
 #     cipher: aes256
-
+#
 # 2. Without details: (Does not include `name:`)
 # ca_requests:
 #   - "{{ ansible_fqdn }}"
