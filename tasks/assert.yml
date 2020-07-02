@@ -55,6 +55,7 @@
     that:
       - item is defined
       - item | length > 0
+    quiet: yes
   loop: "{{ ca_requests }}"
   when:
     - item.name is not defined
@@ -69,6 +70,7 @@
       - item.cipher is defined
       - item.cipher | length > 0
       - item.cipher in ca_acceptable_ciphers
+    quiet: yes
   loop: "{{ ca_requests }}"
   when:
     - item.name is defined
