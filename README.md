@@ -16,17 +16,6 @@ This example is taken from `molecule/resources/converge.yml` and is tested on ea
   become: yes
   gather_facts: yes
 
-  vars:
-    ca_requests:
-      - "{{ ansible_fqdn }}"
-      - name: my_ca.example.com
-        passphrase: WoNtT3L1
-        cipher: aes256
-        country_name: NL
-        email_address: robert@meinit.nl
-        organization_name: Some Corporation
-        organizational_unit_name: Department X
-
   roles:
     - role: robertdebock.ca
 ```
@@ -59,9 +48,17 @@ For verification `molecule/resources/verify.yml` run after the role has been app
   become: yes
   gather_facts: yes
 
-  tasks:
-    - name: check if connection still works
-      ping:
+  roles:
+    - role: robertdebock.ca
+      ca_requests:
+        - "{{ ansible_fqdn }}"
+        - name: my_ca.example.com
+          passphrase: WoNtT3L1
+          cipher: aes256
+          country_name: NL
+          email_address: robert@meinit.nl
+          organization_name: Some Corporation
+          organizational_unit_name: Department X
 ```
 
 Also see a [full explanation and example](https://robertdebock.nl/how-to-use-these-roles.html) on how to use these roles.
