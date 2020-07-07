@@ -58,6 +58,7 @@
     quiet: yes
   loop: "{{ ca_requests }}"
   when:
+    - ca_requests is defined
     - item.name is not defined
 
 - name: test if item of ca_requests with details is set correctly
@@ -73,6 +74,7 @@
     quiet: yes
   loop: "{{ ca_requests }}"
   when:
+    - ca_requests is defined
     - item.name is defined
 
 - name: test if ca_publication_location is set correctly
