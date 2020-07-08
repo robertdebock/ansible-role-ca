@@ -64,13 +64,7 @@
 - name: test if item of ca_requests with details is set correctly
   assert:
     that:
-      - item.name is defined
       - item.name | length > 0
-      - item.passphrase is defined
-      - item.passphrase | length > 0
-      - item.cipher is defined
-      - item.cipher | length > 0
-      - item.cipher in ca_acceptable_ciphers
     quiet: yes
   loop: "{{ ca_requests }}"
   when:
