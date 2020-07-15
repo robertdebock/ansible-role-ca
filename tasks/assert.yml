@@ -68,7 +68,7 @@
     quiet: yes
   loop: "{{ ca_requests }}"
   loop_control:
-    label: "{{ item.name }}"
+    label: "{{ item.name | default('item.name is not set') }}"
   when:
     - ca_requests is defined
     - item.name is defined
