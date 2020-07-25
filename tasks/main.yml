@@ -45,10 +45,11 @@
 - name: generate ca certificate
   command:
     chdir: "{{ ca_openssl_path }}"
-    cmd: openssl ca -config {{ ca_openssl_config_file }} -create_serial
+    cmd: openssl ca -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }} 
       -out {{ ca_certificate_path }} -days 1095
+      -create_serial
       -selfsign -extensions v3_ca
-      -key {{ ca_passphrase }} -batch -infiles {{ ca_csr_path }}
+      -batch -infiles {{ ca_csr_path }}
     creates: "{{ ca_openssl_path }}/{{ ca_certificate_path }}"
     
 - name: generate requested key
@@ -64,7 +65,7 @@
 
 - name: generate requested certificate signing request
   openssl_csr:
-    path: "{{ ca_openssl_path }}/{{ item.name | default(item) }}.csr"
+    path: "{{ ca_openssl_path }}/{{ ca_requests_path }}/{{ item.name | default(item) }}.csr"
     privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name | default(item) }}.pem"
     privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
     common_name: "{{ item.name | default(item) }}"
@@ -78,18 +79,30 @@
   when:
     - ca_requests is defined
 
-# - name: generate certificate
-#   openssl_certificate:
-#     privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name | default(item) }}.pem"
-#     path: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
-#     csr_path: "{{ ca_openssl_path }}/{{ item.name | default(item) }}.csr"
-#     privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
-#     provider: selfsigned
-#   loop: "{{ ca_requests }}"
-#   loop_control:
-#     label: "{{ item.name | default(item) }}"
-#   when:
-#     - ca_requests is defined
+- name: generate requested certificate extension files
+  template:
+    src: extensions.cnf.j2
+    dest: "{{ ca_openssl_path }}/{{ item.name }}.cnf"
+  loop: "{{ ca_requests }}"
+  loop_control:
+    label: "{{ item.name | default(item) }}"
+  when:
+    - ca_requests is defined
+
+- name: generate requested certificate
+  command:
+    chdir: "{{ ca_openssl_path }}"
+    cmd: openssl ca -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }}
+      -out {{ ca_certs_path }}/{{ item.name }}.crt
+      -policy policy_anything
+      -extfile {{ item.name }}.cnf -extensions x509_extensions
+      -batch -infiles {{ ca_requests_path }}/{{ item.name }}.csr
+    creates: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name }}.crt"
+  loop: "{{ ca_requests }}"
+  loop_control:
+    label: "{{ item.name | default(item) }}"
+  when:
+    - ca_requests is defined
 
 - name: ensure publication location exists
   file:
