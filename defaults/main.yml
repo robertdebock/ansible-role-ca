@@ -13,6 +13,7 @@ ca_email_address: robert@meinit.nl
 ca_organization_name: Very little
 ca_organizational_unit_name: Even less
 ca_state_or_province_name: Utrecht
+ca_locality_name: Utrecht
 
 # There are two formats to request a key and certificate:
 # 1. With details: (Includes `name:`)
@@ -43,11 +44,16 @@ ca_publication_location: "{{ httpd_data_directory | default('/tmp') }}/pub"
 # ca_openssl_path: /my/preferred/path
 ca_openssl_path: "{{ _ca_openssl_path[ansible_os_family] | default(_ca_openssl_path['default']) }}"
 
+# config file name
+ca_openssl_config_file: openssl.cnf
+
 # The names of the generated files are set to a sane default, but if you need
 # to change the for your application, you can overwrite the values. These paths
 # are relative to `ca_openssl_path`.
 ca_private_path: private
 ca_certs_path: certs
-ca_privatekey_path: "{{ ca_private_path }}/ca.pem"
-ca_csr_path: ca.csr
+ca_requests_path: requests
+ca_newcerts_path: newcerts
+ca_privatekey_path: "{{ ca_private_path }}/ca.key"
+ca_csr_path: "{{ ca_requests_path }}/ca.csr"
 ca_certificate_path: "{{ ca_certs_path }}/ca.crt"

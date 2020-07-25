@@ -11,6 +11,18 @@
   loop:
     - "{{ ca_openssl_path }}/{{ ca_private_path }}"
     - "{{ ca_openssl_path }}/{{ ca_certs_path }}"
+    - "{{ ca_openssl_path }}/{{ ca_requests_path }}"
+    - "{{ ca_openssl_path }}/{{ ca_newcerts_path }}"
+
+- name: ensure ca database text file exists
+  file:
+    path: "{{ ca_openssl_path }}/index.txt"
+    state: touch
+
+- name: ensure openssl config file exists
+  template:
+    src: "{{ ca_openssl_config_file }}.j2"
+    dest: "{{ ca_openssl_path }}/{{ ca_openssl_config_file }}"
 
 - name: generate ca key
   openssl_privatekey:
@@ -31,13 +43,14 @@
     state_or_province_name: "{{ ca_state_or_province_name | default(omit) }}"
 
 - name: generate ca certificate
-  openssl_certificate:
-    path: "{{ ca_openssl_path }}/{{ ca_certificate_path }}"
-    privatekey_path: "{{ ca_openssl_path }}/{{ ca_privatekey_path }}"
-    privatekey_passphrase: "{{ ca_passphrase }}"
-    csr_path: "{{ ca_openssl_path }}/{{ ca_csr_path }}"
-    provider: selfsigned
-
+  command:
+    chdir: "{{ ca_openssl_path }}"
+    cmd: openssl ca -config {{ ca_openssl_config_file }} -create_serial
+      -out {{ ca_certificate_path }} -days 1095
+      -selfsign -extensions v3_ca
+      -key {{ ca_passphrase }} -batch -infiles {{ ca_csr_path }}
+    creates: "{{ ca_openssl_path }}/{{ ca_certificate_path }}"
+    
 - name: generate requested key
   openssl_privatekey:
     path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name | default(item) }}.pem"
@@ -65,18 +78,18 @@
   when:
     - ca_requests is defined
 
-- name: generate certificate
-  openssl_certificate:
-    privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name | default(item) }}.pem"
-    path: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
-    csr_path: "{{ ca_openssl_path }}/{{ item.name | default(item) }}.csr"
-    privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
-    provider: selfsigned
-  loop: "{{ ca_requests }}"
-  loop_control:
-    label: "{{ item.name | default(item) }}"
-  when:
-    - ca_requests is defined
+# - name: generate certificate
+#   openssl_certificate:
+#     privatekey_path: "{{ ca_openssl_path }}/{{ ca_private_path }}/{{ item.name | default(item) }}.pem"
+#     path: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
+#     csr_path: "{{ ca_openssl_path }}/{{ item.name | default(item) }}.csr"
+#     privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
+#     provider: selfsigned
+#   loop: "{{ ca_requests }}"
+#   loop_control:
+#     label: "{{ item.name | default(item) }}"
+#   when:
+#     - ca_requests is defined
 
 - name: ensure publication location exists
   file:
