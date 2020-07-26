@@ -18,6 +18,8 @@
   file:
     path: "{{ ca_openssl_path }}/index.txt"
     state: touch
+    modification_time: preserve
+    access_time: preserve
 
 - name: ensure openssl config file exists
   template:
