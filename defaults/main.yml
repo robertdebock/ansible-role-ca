@@ -1,6 +1,13 @@
 ---
 # defaults file for ca
 
+# set ca_init: 'yes' to create CA
+ca_init: no
+
+# ca_own_root: 'yes' if you want to have yout own root CA.
+# if no, set ca_certificate_path manually
+ca_own_root: yes
+
 # A passphrase for the CA key.
 ca_passphrase: SuP3rS3creT
 
@@ -43,24 +50,3 @@ ca_publication_location: "{{ httpd_data_directory | default('/tmp') }}/pub"
 # If you need a CA certificate somewhere else, simple use something like this:
 # ca_openssl_path: /my/preferred/path
 ca_openssl_path: "{{ _ca_openssl_path[ansible_os_family] | default(_ca_openssl_path['default']) }}"
-
-# config file name
-ca_openssl_config_file: openssl.cnf
-
-# The names of the generated files are set to a sane default, but if you need
-# to change the for your application, you can overwrite the values. These paths
-# are relative to `ca_openssl_path`.
-ca_private_path: private
-ca_certs_path: certs
-ca_requests_path: requests
-ca_newcerts_path: newcerts
-ca_privatekey_path: "{{ ca_private_path }}/ca.key"
-ca_csr_path: "{{ ca_requests_path }}/ca.csr"
-ca_certificate_path: "{{ ca_certs_path }}/ca.crt"
-
-# Directory of created extension files
-ca_extfiles_path: extfiles
-
-# Directory where subject keys are waiting for their certificate
-ca_subject_keys_path: subject_keys
-

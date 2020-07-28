@@ -9,7 +9,7 @@
 
 # This definition stops the following lines choking if HOME isn't
 # defined.
-HOME			= {{ ca_openssl_path }}
+HOME			= {{ ca_path }}
 
 # Extra OBJECT IDENTIFIER info:
 #oid_file		= $ENV::HOME/.oid
@@ -45,7 +45,7 @@ default_ca	= CA_default		# The default ca section
 ####################################################################
 [ CA_default ]
 
-dir		= {{ ca_openssl_path }}		# Where everything is kept
+dir		= {{ ca_path }}		# Where everything is kept
 certs		= $dir/{{ ca_certs_path }}	# Where the issued certs are kept
 crl_dir		= $dir/crl		# Where the issued crl are kept
 database	= $dir/index.txt	# database index file.

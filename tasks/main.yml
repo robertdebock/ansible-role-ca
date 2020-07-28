@@ -1,65 +1,43 @@
 ---
 # tasks file for ca
-- name: include assert.yml
-  include_tasks: assert.yml
+# - name: include assert.yml
+#   include_tasks: assert.yml
 
-- name: ensure openssl_path exists
-  file:
-    path: "{{ item }}"
-    state: directory
-    recurse: yes
-  loop:
-    - "{{ ca_openssl_path }}/{{ ca_private_path }}"
-    - "{{ ca_openssl_path }}/{{ ca_certs_path }}"
-    - "{{ ca_openssl_path }}/{{ ca_requests_path }}"
-    - "{{ ca_openssl_path }}/{{ ca_newcerts_path }}"
-    - "{{ ca_openssl_path }}/{{ ca_extfiles_path }}"
-    - "{{ ca_openssl_path }}/{{ ca_subject_keys_path }}"
+# init
+- name: set path for root CA
+  set_fact:
+    ca_path: "{{ ca_openssl_path }}/{{ ca_common_name }}/rootCA"
+    ca_filename: rootCA
+  when:
+    - ca_init
+    - ca_own_root
 
-- name: ensure ca database text file exists
-  file:
-    path: "{{ ca_openssl_path }}/index.txt"
-    state: touch
-    modification_time: preserve
-    access_time: preserve
+- name: init root CA
+  include_tasks: init_ca.yml
+  when:
+    - ca_init
+    - ca_own_root
 
-- name: ensure openssl config file exists
-  template:
-    src: "{{ ca_openssl_config_file }}.j2"
-    dest: "{{ ca_openssl_path }}/{{ ca_openssl_config_file }}"
+- name: set path for CA
+  set_fact:
+    ca_path: "{{ ca_openssl_path }}/{{ ca_common_name }}"
+    ca_filename: ca
 
-- name: generate ca key
-  openssl_privatekey:
-    path: "{{ ca_openssl_path }}/{{ ca_privatekey_path }}"
-    passphrase: "{{ ca_passphrase }}"
-    cipher: aes256
+- name: init CA
+  include_tasks: init_ca.yml
+  when: ca_init
 
-- name: generate ca certificate signing request
-  openssl_csr:
-    path: "{{ ca_openssl_path }}/{{ ca_csr_path }}"
-    privatekey_path: "{{ ca_openssl_path }}/{{ ca_privatekey_path }}"
-    privatekey_passphrase: "{{ ca_passphrase }}"
-    common_name: "{{ ca_common_name }}"
-    country_name: "{{ ca_country_name | default(omit) }}"
-    email_address: "{{ ca_email_address | default(omit) }}"
-    organization_name: "{{ ca_organization_name | default(omit) }}"
-    organizational_unit_name: "{{ ca_organizational_unit_name | default(omit) }}"
-    state_or_province_name: "{{ ca_state_or_province_name | default(omit) }}"
+- name: generate ca certificates
+  include_tasks: generate_ca_certs.yml
+  when:
+    - ca_init
+    - ca_own_root
 
-- name: generate ca certificate
-  command:
-    chdir: "{{ ca_openssl_path }}"
-    cmd: openssl ca -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }} 
-      -out {{ ca_certificate_path }} -days 1095
-      -create_serial
-      -selfsign -extensions v3_ca
-      -batch -infiles {{ ca_csr_path }}
-    creates: "{{ ca_openssl_path }}/{{ ca_certificate_path }}"
-
-- name: upload requested keys
+# certificate requests
+- name: upload requested key
   copy:
     src: "{{ item.upload_keyfile }}"
-    dest: "{{ ca_openssl_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
+    dest: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
   loop: "{{ ca_requests }}"
   loop_control:
     label: "{{ item.name | default(item) }}"
@@ -67,11 +45,11 @@
     - ca_requests is defined
     - item.upload_keyfile is defined
 
-- name: copy requested keys
+- name: copy requested key
   copy:
     remote_src: yes
     src: "{{ item.keyfile_path }}"
-    dest: "{{ ca_openssl_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
+    dest: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
   loop: "{{ ca_requests }}"
   loop_control:
     label: "{{ item.name | default(item) }}"
@@ -81,7 +59,7 @@
 
 - name: generate requested key
   openssl_privatekey:
-    path: "{{ ca_openssl_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
+    path: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
     passphrase: "{{ item.passphrase | default(omit) }}"
     cipher: "{{ item.cipher | default(omit) }}"
   loop: "{{ ca_requests }}"
@@ -94,8 +72,8 @@
 
 - name: generate requested certificate signing request
   openssl_csr:
-    path: "{{ ca_openssl_path }}/{{ ca_requests_path }}/{{ item.name | default(item) }}.csr"
-    privatekey_path: "{{ ca_openssl_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
+    path: "{{ ca_path }}/{{ ca_requests_path }}/{{ item.name | default(item) }}.csr"
+    privatekey_path: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
     privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
     common_name: "{{ item.name | default(item) }}"
     country_name: "{{ item.country_name | default(omit) }}"
@@ -108,10 +86,10 @@
   when:
     - ca_requests is defined
 
-- name: generate requested certificate extension files
+- name: generate requested certificate extension file
   template:
     src: extensions.cnf.j2
-    dest: "{{ ca_openssl_path }}/{{ ca_extfiles_path }}/{{ item.name }}.cnf"
+    dest: "{{ ca_path }}/{{ ca_extfiles_path }}/{{ item.name }}.cnf"
   loop: "{{ ca_requests }}"
   loop_control:
     label: "{{ item.name | default(item) }}"
@@ -120,13 +98,9 @@
 
 - name: generate requested certificate
   command:
-    chdir: "{{ ca_openssl_path }}"
-    cmd: openssl ca -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }}
-      -out {{ ca_certs_path }}/{{ item.name }}.crt
-      -policy policy_anything
-      -extfile {{ ca_extfiles_path }}/{{ item.name }}.cnf -extensions x509_extensions
-      -batch -infiles {{ ca_requests_path }}/{{ item.name }}.csr
-    creates: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name }}.crt"
+    chdir: "{{ ca_path }}"
+    cmd: "openssl ca {{ ca_client_cert_params }}"
+    creates: "{{ ca_path }}/{{ ca_certs_path }}/{{ item.name }}.crt"
   loop: "{{ ca_requests }}"
   loop_control:
     label: "{{ item.name | default(item) }}"
@@ -145,7 +119,7 @@
 
 - name: publish certificate
   copy:
-    src: "{{ ca_openssl_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
+    src: "{{ ca_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
     dest: "{{ ca_publication_location }}/{{ item.name | default(item) }}.crt"
     mode: "644"
     remote_src: yes

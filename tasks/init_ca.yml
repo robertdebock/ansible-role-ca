@@ -1,0 +1,34 @@
+---
+- name: ensure ca_path exists
+  file:
+    path: "{{ item }}"
+    state: directory
+    recurse: yes
+  loop:
+    - "{{ ca_path }}/{{ ca_private_path }}"
+    - "{{ ca_path }}/{{ ca_certs_path }}"
+    - "{{ ca_path }}/{{ ca_requests_path }}"
+    - "{{ ca_path }}/{{ ca_newcerts_path }}"
+    - "{{ ca_path }}/{{ ca_extfiles_path }}"
+    - "{{ ca_path }}/{{ ca_subject_keys_path }}"
+
+- name: ensure index, crl files exists
+  file:
+    path: "{{ item }}"
+    state: touch
+    modification_time: preserve
+    access_time: preserve
+  loop:
+    - "{{ ca_path }}/index.txt"
+    - "{{ ca_path }}/crlnumber"
+
+- name: ensure openssl config file exists
+  template:
+    src: "{{ ca_openssl_config_file }}.j2"
+    dest: "{{ ca_path }}/{{ ca_openssl_config_file }}"
+
+- name: generate ca key
+  openssl_privatekey:
+    path: "{{ ca_path }}/{{ ca_privatekey_path }}"
+    passphrase: "{{ ca_passphrase }}"
+    cipher: aes256
