@@ -21,6 +21,11 @@
     cmd: "openssl ca {{ ca_root_cert_params }}"
     creates: "{{ ca_root_path }}/{{ ca_root_certificate_path }}"
 
+- name: save root ca certificate
+  slurp:
+    src: "{{ ca_root_path }}/{{ ca_root_certificate_path }}"
+  register: _cacert_root
+
 - name: generate ca certificate signing request
   openssl_csr:
     path: "{{ ca_root_path }}/{{ ca_csr_path }}"
@@ -39,8 +44,12 @@
     cmd: "openssl ca {{ ca_cert_params }}"
     creates: "{{ ca_root_path }}/{{ ca_certificate_path }}"
 
-- name: distribute intermediate ca certificate
-  copy:
-    remote_src: yes
+- name: save ca certificate
+  slurp:
     src: "{{ ca_root_path }}/{{ ca_certificate_path }}"
+  register: _cacert
+
+- name: create ca chain
+  copy:
+    content: "{{ _cacert.content | b64decode }}{{ _cacert_root.content | b64decode }}"
     dest: "{{ ca_path }}/{{ ca_certificate_path }}"
