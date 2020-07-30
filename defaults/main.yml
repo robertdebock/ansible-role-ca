@@ -2,7 +2,7 @@
 # defaults file for ca
 
 # set ca_init: 'yes' to create CA
-ca_init: no
+ca_init: yes
 
 # ca_own_root: 'yes' if you want to have yout own root CA.
 # if no, set ca_certificate_path manually
