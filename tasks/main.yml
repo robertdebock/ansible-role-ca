@@ -1,7 +1,7 @@
 ---
 # tasks file for ca
-# - name: include assert.yml
-#   include_tasks: assert.yml
+- name: include assert.yml
+  include_tasks: assert.yml
 
 # init
 - name: set path for root CA
