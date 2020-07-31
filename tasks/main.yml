@@ -88,8 +88,8 @@
 
 - name: generate requested certificate extension file
   template:
-    src: "extensions.cnf.j2"
-    dest: "{{ ca_path }}/{{ ca_extfiles_path }}/{{ item.name }}.cnf"
+    src: extensions.cnf.j2
+    dest: "{{ ca_path }}/{{ ca_extfiles_path }}/{{ item.name | default(item) }}.cnf"
   loop: "{{ ca_requests }}"
   loop_control:
     label: "{{ item.name | default(item) }}"
@@ -100,7 +100,7 @@
   command:
     chdir: "{{ ca_path }}"
     cmd: "openssl ca {{ ca_client_cert_params }}"
-    creates: "{{ ca_path }}/{{ ca_certs_path }}/{{ item.name }}.crt"
+    creates: "{{ ca_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
   loop: "{{ ca_requests }}"
   loop_control:
     label: "{{ item.name | default(item) }}"
