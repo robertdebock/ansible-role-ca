@@ -17,6 +17,7 @@ ca_requests_path: requests
 ca_newcerts_path: newcerts
 ca_extfiles_path: extfiles
 ca_subject_keys_path: subject_keys
+ca_filename: ca
 ca_privatekey_path: "{{ ca_private_path }}/{{ ca_filename }}.key"
 ca_csr_path: "{{ ca_requests_path }}/{{ ca_filename }}.csr"
 ca_certificate_path: "{{ ca_certs_path }}/{{ ca_filename }}.crt"
