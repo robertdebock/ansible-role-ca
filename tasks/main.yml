@@ -8,7 +8,7 @@
     path: "{{ item }}"
     state: directory
     recurse: yes
-    mode: "0750"
+    mode: preserve
   loop:
     - "{{ ca_openssl_path }}/{{ ca_private_path }}"
     - "{{ ca_openssl_path }}/{{ ca_certs_path }}"
