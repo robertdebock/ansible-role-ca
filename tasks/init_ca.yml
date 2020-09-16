@@ -12,15 +12,23 @@
     - "{{ ca_path }}/{{ ca_extfiles_path }}"
     - "{{ ca_path }}/{{ ca_subject_keys_path }}"
 
-- name: ensure index, crl files exists
+- name: ensure index file exists
   file:
-    path: "{{ item }}"
+    path: "{{ ca_path }}/index.txt"
     state: touch
     modification_time: preserve
     access_time: preserve
-  loop:
-    - "{{ ca_path }}/index.txt"
-    - "{{ ca_path }}/crlnumber"
+
+- name: check whether crlnumber file exists
+  stat:
+    path: "{{ ca_path }}/crlnumber"
+  register: check_crlnumber
+
+- name: init crlnumber file
+  file:
+    path: "{{ ca_path }}/crlnumber"
+    content: "1000"
+  when: not check_crlnumber.stat.exists
 
 - name: ensure openssl config file exists
   template:
