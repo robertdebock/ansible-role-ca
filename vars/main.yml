@@ -46,11 +46,19 @@ ca_cert_params: >
 
 ca_client_cert_params: >
   -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }}
-  -out {{ ca_certs_path }}/{{ item.name | default(item) }}.crt
+  -out {{ ca_certs_path }}/{{ request.name | default(request) }}.crt
   -policy policy_anything
   -notext -create_serial
-  -extfile {{ ca_extfiles_path }}/{{ item.name | default(item) }}.cnf -extensions x509_extensions
-  -batch -infiles {{ ca_requests_path }}/{{ item.name | default(item) }}.csr
+  -extfile {{ ca_extfiles_path }}/{{ request.name | default(request) }}.cnf -extensions x509_extensions
+  -batch -infiles {{ ca_requests_path }}/{{ request.name | default(request) }}.csr
+
+ca_client_cert_revoke_params: >
+  -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }}
+  -revoke {{ ca_certs_path }}/{{ request.name | default(request) }}.crt
+
+ca_crl_params: >
+  -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }}
+  -gencrl -out {{ ca_certs_path }}/crl.pem
 
 # The ca_openssl_path is determined in the `defaults/main.yml`, so users may
 # overwrite it to their preference.

@@ -33,80 +33,6 @@
     - ca_init
     - ca_own_root
 
-# certificate requests
-- name: upload requested key
-  copy:
-    src: "{{ item.upload_keyfile }}"
-    dest: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
-  loop: "{{ ca_requests }}"
-  loop_control:
-    label: "{{ item.name | default(item) }}"
-  when:
-    - ca_requests is defined
-    - item.upload_keyfile is defined
-
-- name: copy requested key
-  copy:
-    remote_src: yes
-    src: "{{ item.keyfile_path }}"
-    dest: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
-  loop: "{{ ca_requests }}"
-  loop_control:
-    label: "{{ item.name | default(item) }}"
-  when:
-    - ca_requests is defined
-    - item.keyfile_path is defined
-
-- name: generate requested key
-  openssl_privatekey:
-    path: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
-    passphrase: "{{ item.passphrase | default(omit) }}"
-    cipher: "{{ item.cipher | default(omit) }}"
-  loop: "{{ ca_requests }}"
-  loop_control:
-    label: "{{ item.name | default(item) }}"
-  when:
-    - ca_requests is defined
-    - item.upload_keyfile is not defined
-    - item.keyfile_path is not defined
-
-- name: generate requested certificate signing request
-  openssl_csr:
-    path: "{{ ca_path }}/{{ ca_requests_path }}/{{ item.name | default(item) }}.csr"
-    privatekey_path: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ item.name | default(item) }}.pem"
-    privatekey_passphrase: "{{ item.passphrase | default(omit) }}"
-    common_name: "{{ item.name | default(item) }}"
-    country_name: "{{ item.country_name | default(omit) }}"
-    email_address: "{{ item.email_address | default(omit) }}"
-    organization_name: "{{ item.organization_name | default(omit) }}"
-    organizational_unit_name: "{{ item.organizational_unit_name | default(omit) }}"
-  loop: "{{ ca_requests }}"
-  loop_control:
-    label: "{{ item.name | default(item) }}"
-  when:
-    - ca_requests is defined
-
-- name: generate requested certificate extension file
-  template:
-    src: extensions.cnf.j2
-    dest: "{{ ca_path }}/{{ ca_extfiles_path }}/{{ item.name | default(item) }}.cnf"
-  loop: "{{ ca_requests }}"
-  loop_control:
-    label: "{{ item.name | default(item) }}"
-  when:
-    - ca_requests is defined
-
-- name: generate requested certificate
-  command:
-    chdir: "{{ ca_path }}"
-    cmd: "openssl ca {{ ca_client_cert_params }}"
-    creates: "{{ ca_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
-  loop: "{{ ca_requests }}"
-  loop_control:
-    label: "{{ item.name | default(item) }}"
-  when:
-    - ca_requests is defined
-
 - name: ensure publication location exists
   file:
     path: "{{ ca_publication_location }}"
@@ -117,15 +43,11 @@
   when:
     - ca_publication_location is defined
 
-- name: publish certificate
-  copy:
-    src: "{{ ca_path }}/{{ ca_certs_path }}/{{ item.name | default(item) }}.crt"
-    dest: "{{ ca_publication_location }}/{{ item.name | default(item) }}.crt"
-    mode: "644"
-    remote_src: yes
+- name: handle requests
+  include_tasks: requests.yml
   loop: "{{ ca_requests }}"
   loop_control:
-    label: "{{ item.name | default(item) }}"
+    loop_var: request
+    label: "{{ request.name | default(request) }}"
   when:
     - ca_requests is defined
-    - ca_publication_location is defined
