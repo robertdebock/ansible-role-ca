@@ -28,14 +28,14 @@ ca_root_csr_path: "{{ ca_requests_path }}/rootCA.csr"
 ca_root_certificate_path: "{{ ca_certs_path }}/rootCA.crt"
 ca_root_common_name: "{{ ca_common_name }} root CA"
 
-# CA certificate creation parameters (openssl ca) 
+# CA certificate creation parameters (openssl ca)
 ca_root_cert_params: >
   -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }}
   -out {{ ca_root_certificate_path }} -days 7300
   -create_serial
   -selfsign -extensions v3_ca
   -batch -infiles {{ ca_root_csr_path }}
-  
+
 ca_cert_params: >
   -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }}
   -out {{ ca_certificate_path }} -days 3650
