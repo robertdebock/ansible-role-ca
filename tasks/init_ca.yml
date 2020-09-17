@@ -25,8 +25,8 @@
   register: check_crlnumber
 
 - name: init crlnumber file
-  file:
-    path: "{{ ca_path }}/crlnumber"
+  copy:
+    dest: "{{ ca_path }}/crlnumber"
     content: "1000"
   when: not check_crlnumber.stat.exists
 
