@@ -3,6 +3,7 @@
   file:
     path: "{{ item }}"
     state: directory
+    mode: "0755"
     recurse: yes
   loop:
     - "{{ ca_path }}/{{ ca_private_path }}"
@@ -18,6 +19,7 @@
     state: touch
     modification_time: preserve
     access_time: preserve
+    mode: "0644"
 
 - name: check whether crlnumber file exists
   stat:
@@ -28,12 +30,14 @@
   copy:
     dest: "{{ ca_path }}/crlnumber"
     content: "1000"
+    mode: "0644"
   when: not check_crlnumber.stat.exists
 
 - name: ensure openssl config file exists
   template:
     src: "{{ ca_openssl_config_file }}.j2"
     dest: "{{ ca_path }}/{{ ca_openssl_config_file }}"
+    mode: "0644"
 
 - name: generate ca key
   openssl_privatekey:

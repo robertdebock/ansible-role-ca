@@ -5,6 +5,7 @@
       copy:
         src: "{{ request.upload_keyfile }}"
         dest: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ request.name | default(request) }}.pem"
+        mode: "0644"
       when:
         - request.upload_keyfile is defined
 
@@ -13,6 +14,7 @@
         remote_src: yes
         src: "{{ request.keyfile_path }}"
         dest: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ request.name | default(request) }}.pem"
+        mode: "0644"
       when:
         - request.keyfile_path is defined
 
@@ -40,6 +42,7 @@
       template:
         src: extensions.cnf.j2
         dest: "{{ ca_path }}/{{ ca_extfiles_path }}/{{ request.name | default(request) }}.cnf"
+        mode: "0644"
 
     - name: generate requested certificate
       command:
@@ -81,7 +84,7 @@
         path: "{{ ca_path }}/{{ ca_certs_path }}/{{ request.name | default(request) }}.crt"
         state: absent
       when:
-        - revoke_result.stderr != ''
+        - revoke_result.stderr | length > 0
         - revoke_result.stderr_lines | last is regex('^(Data Base Updated|ERROR:Already revoked).*$')
   when:
     - request.state is defined
