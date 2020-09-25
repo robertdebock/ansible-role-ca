@@ -4,7 +4,6 @@
     path: "{{ item }}"
     state: directory
     mode: "0755"
-    recurse: yes
   loop:
     - "{{ ca_path }}/{{ ca_private_path }}"
     - "{{ ca_path }}/{{ ca_certs_path }}"
