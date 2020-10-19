@@ -21,6 +21,7 @@ ca_filename: ca
 ca_privatekey_path: "{{ ca_private_path }}/{{ ca_filename }}.key"
 ca_csr_path: "{{ ca_requests_path }}/{{ ca_filename }}.csr"
 ca_certificate_path: "{{ ca_certs_path }}/{{ ca_filename }}.crt"
+ca_crl_path: crl.pem
 
 # root CA names
 ca_root_privatekey_path: "{{ ca_private_path }}/rootCA.key"
@@ -58,7 +59,7 @@ ca_client_cert_revoke_params: >
 
 ca_crl_params: >
   -config {{ ca_openssl_config_file }} -key {{ ca_passphrase }}
-  -gencrl -out {{ ca_certs_path }}/crl.pem
+  -gencrl -out {{ ca_crl_path }}
 
 # The ca_openssl_path is determined in the `defaults/main.yml`, so users may
 # overwrite it to their preference.

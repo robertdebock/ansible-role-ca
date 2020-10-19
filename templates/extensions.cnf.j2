@@ -2,8 +2,8 @@
 
 # These extensions are added when 'ca' signs a request.
 
-{% if item.extensions is defined %}
-{% for ext in item.extensions %}{{ ext }}{% endfor %}
+{% if request.extensions is defined %}
+{% for ext in request.extensions %}{{ ext }}{% endfor %}
 {% endif %}
 
 # This goes against PKIX guidelines but some CAs do it and some software
