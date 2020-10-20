@@ -30,12 +30,6 @@
     content: "1000"
   when: not check_crlnumber.stat.exists
 
-- name: init crl file
-  command:
-    chdir: "{{ ca_path }}"
-    cmd: "openssl ca {{ ca_crl_params }}"
-    creates: "{{ ca_crl_path }}"
-
 - name: ensure openssl config file exists
   template:
     src: "{{ ca_openssl_config_file }}.j2"
@@ -46,3 +40,9 @@
     path: "{{ ca_path }}/{{ ca_privatekey_path }}"
     passphrase: "{{ ca_passphrase }}"
     cipher: aes256
+
+- name: init crl file
+  command:
+    chdir: "{{ ca_path }}"
+    cmd: "openssl ca {{ ca_crl_params }}"
+    creates: "{{ ca_crl_path }}"
