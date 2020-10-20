@@ -71,6 +71,11 @@
       register: revoke_result
       ignore_errors: True
 
+    - name: update crl
+      command:
+        chdir: "{{ ca_path }}"
+        cmd: "openssl ca {{ ca_crl_params }}"
+
     - name: ensure certificate file is absent
       file:
         path: "{{ ca_path }}/{{ ca_certs_path }}/{{ request.name | default(request) }}.crt"
@@ -82,8 +87,3 @@
     - request.state is defined
     - request.state == 'absent'
     - check_certfile.stat.exists
-
-- name: update crl
-  command:
-    chdir: "{{ ca_path }}"
-    cmd: "openssl ca {{ ca_crl_params }}"
