@@ -4,6 +4,9 @@
 #
 language: python
 
+os: linux
+dist: xenial
+
 python:
   - "3.8"
 
@@ -13,7 +16,7 @@ services:
 env:
   global:
     namespace="robertdebock"
-  matrix:
+  jobs:
     - image="alpine" tag="latest"
     - image="alpine" tag="edge"
     - image="centos" tag="7"
@@ -35,9 +38,12 @@ install:
   - pip install tox
 
 script:
-  - function retry { counter=0 ; until "$@" ; do exit=$? ; counter=$(($counter + 1)) ; if [ $counter -ge 3 ] ; then return $exit ; fi ; done ; return 0; } ; retry tox --parallel all
+  - function retry { counter=0 ; until "$@" ; do exit=$? ; counter=$(($counter + 1)) ; if [ $counter -ge 3 ] ; then return $exit ; fi ; done ; return 0; } ; retry tox
 
 notifications:
   webhooks: https://galaxy.ansible.com/api/v1/notifications/
-  slack: "ibKR6l46JZuAFsOPHaOZPcdJ8hOt8QRnJy/uKiVxFvkvdRRq+x2lJF1od5kCiqHr+nU4G6neT3dLhkmnkcLUKSIYKZB1K5wQfgcif/7pkBjRPfNlUzNXc7c3sErW9vwOYPs5H7Qc4Pfhuqfb+KGr/wGQ1juOc2DqpJQqd5pjmO0v9Fgrrm/2jj0tU3mkh3R05zXBhsTEKF+TZuQcX/JWj71NRKddTydzL6ov7gJIB0BPTFsGGEgaUU41nyxxzUZLg97uubM564UEC5mDvI2pJaMsmT5WIoh7v7F2tAmmO6tLeNl35ysCjXfjotTIqnXYL6XmIDyqBZn0w5P2RJkmRqWQWrEwbo1CDxkEbk2eHyzkKeU8Ydz0RKWU/zLnhoYnDAwqCPq2cEBFLS0f6RSgwKIViK+R2j540gLkJmXcgezvZdBxuCd0EYYI7mZ/7aCQqYL19HRk26gnmBM6uFhpe+GITbYNiyC2/vALSlCHmV02vspiXzenA1sUcjmX27O6cmD7l7a3BnTkWblMrG/vBZtO9j+rbATW7Z3XJdVxg0GymGPI9zxGCBmPEgbhpIzh46641rVk9IHFbRR+8nId6Ip0y33YLuKTZ54X1yW6jbVL43lRjA1TSM6hyU3gV5z3AKXQgf36SCreXopqTIo4DrkbkWr/7Yc3jQL6syKn/n4="
+  slack:
+    secure: "OVGJiW9NkEeI+0hp/vx36J2HYnkQBULmD3fjB3e7Gv6xTYLLscyGWZfhE34GqHO/bHbzqQXY/dUS3fFnwLYF2d7kUYiFUNbXN9W1BFRiQOPSCgW29IysBtoGyt0Ct9gD+4w3rVEoETsS3LUxegYyWsd/nam5cHCuMmo3A1iV/FsAXUA2vxodM2LfOEZTcWHqsn8D220Vjf2DupHFd3/dM+AWc/NFYQfTtnsl/z3jUr65OpNQKE7otMVQXshoEX9N+9zeRb8flNFd+Vdu/tOaHq6Wn00KYhalctoO4rsYA0xZ85kkHGSnO/Q1Ql7nGOrh5664tLBFqPJyxigVqY3bgcStXxEjhTNyJAm03tFUKt8//iWqLNtTGbp565PgWBgcccXuwCirB52JfFfwvAqJMo8a1+nGhx5QNIuqXfPwDDKkdFPcVTtwipWoyqOq1/NY8rnOlxaU0DXbxSPeQUuh5Ul2giJiUqHpODU/d573/4eTsNLUJonyeFebruj7dmXCiyIZsFqwGbW3vCcE1w9QmVYbz6V+QI70bvZz2qs08JadgIWGKRvxYtsGWmvDkjw8BJnKfr6BrjruA/0PKvohV9wSDA7HQFN1xDvGU3nV5wU36/PNdGPKdSvQf3FOOkSn0aJYLNOUBOWAVETKBo9PFkg7lJzL/WFYQ9k3/IZuQLE="
+    on_success: change
+    template: "%{result}: %{repository_slug}@%{branch}, build <%{build_url}|#%{build_number}> (<%{compare_url}|%{commit}>)"
   email: false

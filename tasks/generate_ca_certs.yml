@@ -53,6 +53,7 @@
   copy:
     content: "{{ _cacert.content | b64decode }}{{ _cacert_root.content | b64decode }}"
     dest: "{{ ca_path }}/{{ ca_certificate_path }}"
+    mode: "0644"
 
 - name: init crl file
   command:

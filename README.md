@@ -40,7 +40,7 @@ The machine may need to be prepared using `molecule/resources/prepare.yml`:
     - role: robertdebock.httpd
 ```
 
-For verification `molecule/resources/verify.yml` run after the role has been applied.
+For verification `molecule/resources/verify.yml` runs after the role has been applied.
 ```yaml
 ---
 - name: Verify
@@ -70,6 +70,13 @@ These variables are set in `defaults/main.yml`:
 ---
 # defaults file for ca
 
+# set ca_init: 'yes' to create CA
+ca_init: yes
+
+# ca_own_root: 'yes' if you want to have yout own root CA.
+# if no, set ca_certificate_path manually
+ca_own_root: yes
+
 # A passphrase for the CA key.
 ca_passphrase: SuP3rS3creT
 
@@ -82,6 +89,7 @@ ca_email_address: robert@meinit.nl
 ca_organization_name: Very little
 ca_organizational_unit_name: Even less
 ca_state_or_province_name: Utrecht
+ca_locality_name: Utrecht
 
 # There are two formats to request a key and certificate:
 # 1. With details: (Includes `name:`)
@@ -111,15 +119,6 @@ ca_publication_location: "{{ httpd_data_directory | default('/tmp') }}/pub"
 # If you need a CA certificate somewhere else, simple use something like this:
 # ca_openssl_path: /my/preferred/path
 ca_openssl_path: "{{ _ca_openssl_path[ansible_os_family] | default(_ca_openssl_path['default']) }}"
-
-# The names of the generated files are set to a sane default, but if you need
-# to change the for your application, you can overwrite the values. These paths
-# are relative to `ca_openssl_path`.
-ca_private_path: private
-ca_certs_path: certs
-ca_privatekey_path: "{{ ca_private_path }}/ca.pem"
-ca_csr_path: ca.csr
-ca_certificate_path: "{{ ca_certs_path }}/ca.crt"
 ```
 
 ## [Requirements](#requirements)
@@ -160,9 +159,9 @@ This role has been tested on these [container images](https://hub.docker.com/u/r
 |opensuse|all|
 |ubuntu|focal, bionic, xenial|
 
-The minimum version of Ansible required is 2.8 but tests have been done to:
+The minimum version of Ansible required is 2.9, tests have been done to:
 
-- The previous version, on version lower.
+- The previous version.
 - The current version.
 - The development version.
 
@@ -213,6 +212,11 @@ image="debian" tag="stable" tox
 
 Apache-2.0
 
+## [Contributors](#contributors)
+
+I'd like to thank everybody that made contributions to this repository. It motivates me, improves the code and is just fun to collaborate.
+
+- [grzs](https://github.com/grzs)
 
 ## [Author Information](#author-information)
 
