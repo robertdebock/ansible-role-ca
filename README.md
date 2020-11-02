@@ -20,7 +20,7 @@ This example is taken from `molecule/resources/converge.yml` and is tested on ea
     - role: robertdebock.ca
 ```
 
-The machine may need to be prepared using `molecule/resources/prepare.yml`:
+The machine needs to be prepared in CI this is done using `molecule/resources/prepare.yml`:
 ```yaml
 ---
 - name: Prepare
@@ -39,28 +39,7 @@ The machine may need to be prepared using `molecule/resources/prepare.yml`:
           common_name: "{{ ansible_fqdn }}"
     - role: robertdebock.httpd
 ```
-
-For verification `molecule/resources/verify.yml` runs after the role has been applied.
-```yaml
----
-- name: Verify
-  hosts: all
-  become: yes
-  gather_facts: yes
-
-  roles:
-    - role: robertdebock.ca
-      ca_requests:
-        - "{{ ansible_fqdn }}"
-        - name: my_ca.example.com
-          passphrase: WoNtT3L1
-          cipher: aes256
-          country_name: NL
-          email_address: robert@meinit.nl
-          organization_name: Some Corporation
-          organizational_unit_name: Department X
 ```
-
 Also see a [full explanation and example](https://robertdebock.nl/how-to-use-these-roles.html) on how to use these roles.
 
 ## [Role Variables](#role-variables)
@@ -126,18 +105,16 @@ ca_openssl_path: "{{ _ca_openssl_path[ansible_os_family] | default(_ca_openssl_p
 - Access to a repository containing packages, likely on the internet.
 - A recent version of Ansible. (Tests run on the current, previous and next release of Ansible.)
 
-The following roles can be installed to ensure all requirements are met, using `ansible-galaxy install -r requirements.yml`:
+## [Status of requirements](#status-of-requirements)
 
-```yaml
----
-- robertdebock.bootstrap
-- robertdebock.buildtools
-- robertdebock.epel
-- robertdebock.httpd
-- robertdebock.openssl
-- robertdebock.python_pip
-
-```
+| Requirement | Travis | GitHub |
+|-------------|--------|--------|
+| [robertdebock.bootstrap](https://galaxy.ansible.com/robertdebock/bootstrap) | [![Build Status Travis](https://travis-ci.com/robertdebock/ansible-role-bootstrap.svg?branch=master)](https://travis-ci.com/robertdebock/ansible-role-bootstrap) | [![Build Status GitHub](https://github.com/robertdebock/ansible-role-bootstrap/workflows/Ansible%20Molecule/badge.svg)](https://github.com/robertdebock/ansible-role-bootstrap/actions) |
+| [robertdebock.buildtools](https://galaxy.ansible.com/robertdebock/buildtools) | [![Build Status Travis](https://travis-ci.com/robertdebock/ansible-role-buildtools.svg?branch=master)](https://travis-ci.com/robertdebock/ansible-role-buildtools) | [![Build Status GitHub](https://github.com/robertdebock/ansible-role-buildtools/workflows/Ansible%20Molecule/badge.svg)](https://github.com/robertdebock/ansible-role-buildtools/actions) |
+| [robertdebock.epel](https://galaxy.ansible.com/robertdebock/epel) | [![Build Status Travis](https://travis-ci.com/robertdebock/ansible-role-epel.svg?branch=master)](https://travis-ci.com/robertdebock/ansible-role-epel) | [![Build Status GitHub](https://github.com/robertdebock/ansible-role-epel/workflows/Ansible%20Molecule/badge.svg)](https://github.com/robertdebock/ansible-role-epel/actions) |
+| [robertdebock.httpd](https://galaxy.ansible.com/robertdebock/httpd) | [![Build Status Travis](https://travis-ci.com/robertdebock/ansible-role-httpd.svg?branch=master)](https://travis-ci.com/robertdebock/ansible-role-httpd) | [![Build Status GitHub](https://github.com/robertdebock/ansible-role-httpd/workflows/Ansible%20Molecule/badge.svg)](https://github.com/robertdebock/ansible-role-httpd/actions) |
+| [robertdebock.openssl](https://galaxy.ansible.com/robertdebock/openssl) | [![Build Status Travis](https://travis-ci.com/robertdebock/ansible-role-openssl.svg?branch=master)](https://travis-ci.com/robertdebock/ansible-role-openssl) | [![Build Status GitHub](https://github.com/robertdebock/ansible-role-openssl/workflows/Ansible%20Molecule/badge.svg)](https://github.com/robertdebock/ansible-role-openssl/actions) |
+| [robertdebock.python_pip](https://galaxy.ansible.com/robertdebock/python_pip) | [![Build Status Travis](https://travis-ci.com/robertdebock/ansible-role-python_pip.svg?branch=master)](https://travis-ci.com/robertdebock/ansible-role-python_pip) | [![Build Status GitHub](https://github.com/robertdebock/ansible-role-python_pip/workflows/Ansible%20Molecule/badge.svg)](https://github.com/robertdebock/ansible-role-python_pip/actions) |
 
 ## [Context](#context)
 
