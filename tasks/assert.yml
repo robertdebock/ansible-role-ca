@@ -1,4 +1,5 @@
 ---
+
 - name: test if ca_passphrase is set correctly
   assert:
     that:
