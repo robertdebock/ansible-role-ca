@@ -2,9 +2,9 @@
 
 Install and configure a certificate authority on your system.
 
-|Travis|GitHub|Quality|Downloads|Version|
-|------|------|-------|---------|-------|
-|[![travis](https://travis-ci.com/robertdebock/ansible-role-ca.svg?branch=master)](https://travis-ci.com/robertdebock/ansible-role-ca)|[![github](https://github.com/robertdebock/ansible-role-ca/workflows/Ansible%20Molecule/badge.svg)](https://github.com/robertdebock/ansible-role-ca/actions)|[![quality](https://img.shields.io/ansible/quality/35543)](https://galaxy.ansible.com/robertdebock/ca)|[![downloads](https://img.shields.io/ansible/role/d/35543)](https://galaxy.ansible.com/robertdebock/ca)|[![Version](https://img.shields.io/github/release/robertdebock/ansible-role-ca.svg)](https://github.com/robertdebock/ansible-role-ca/releases/)|
+|Travis|GitHub|GitLab|Quality|Downloads|Version|
+|------|------|------|-------|---------|-------|
+|[![travis](https://travis-ci.com/robertdebock/ansible-role-ca.svg?branch=master)](https://travis-ci.com/robertdebock/ansible-role-ca)|[![github](https://github.com/robertdebock/ansible-role-ca/workflows/Ansible%20Molecule/badge.svg)](https://github.com/robertdebock/ansible-role-ca/actions)|[![gitlab](https://gitlab.com/robertdebock/ansible-role-ca/badges/master/pipeline.svg)](https://gitlab.com/robertdebock/ansible-role-ca)|[![quality](https://img.shields.io/ansible/quality/35543)](https://galaxy.ansible.com/robertdebock/ca)|[![downloads](https://img.shields.io/ansible/role/d/35543)](https://galaxy.ansible.com/robertdebock/ca)|[![Version](https://img.shields.io/github/release/robertdebock/ansible-role-ca.svg)](https://github.com/robertdebock/ansible-role-ca/releases/)|
 
 ## [Example Playbook](#example-playbook)
 
