@@ -6,6 +6,8 @@
 
   roles:
     - role: ansible-role-ca
+      ca_openssl_path: /ca
+      ca_common_name: example.com
       ca_requests:
         - "{{ ansible_fqdn }}"
         - name: my_ca.example.com
@@ -15,3 +17,14 @@
           email_address: robert@meinit.nl
           organization_name: Some Corporation
           organizational_unit_name: Department X
+
+  post_tasks:
+    - name: check if key exists
+      stat:
+        path: "{{ item }}"
+      loop:
+        - /ca/example.com/certs/ca-{{ ansible_fqdn }}.crt
+        - /ca/example.com/certs/my_ca.example.com.crt
+      register: ca_check_key
+      failed_when:
+        - not ca_check_key.stat.exists
