@@ -23,7 +23,6 @@
       stat:
         path: "{{ item }}"
       loop:
-        - /ca/example.com/certs/ca-{{ ansible_fqdn }}.crt
         - /ca/example.com/certs/my_ca.example.com.crt
       register: ca_check_key
       failed_when:
