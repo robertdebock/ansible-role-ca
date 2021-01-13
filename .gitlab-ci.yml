@@ -14,6 +14,8 @@ molecule:
   rules:
     - if: $CI_COMMIT_TAG == null
   retry: 2
+  only:
+    - master
   parallel:
     matrix:
       - image: "alpine"
