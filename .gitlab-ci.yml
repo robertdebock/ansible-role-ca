@@ -11,6 +11,8 @@ variables:
 molecule:
   script:
     - image=${image} tag=${tag} molecule test
+  rules:
+    - if: $CI_COMMIT_REF_NAME == "master"
   retry: 2
   parallel:
     matrix:
@@ -36,8 +38,6 @@ molecule:
         tag: "latest"
       - image: "ubuntu"
         tag: "bionic"
-  rules:
-    - if: $CI_COMMIT_REF_NAME == "master"
 
 galaxy:
   script:
