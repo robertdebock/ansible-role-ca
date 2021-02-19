@@ -131,7 +131,7 @@ This role has been tested on these [container images](https://hub.docker.com/u/r
 |container|tags|
 |---------|----|
 |alpine|all|
-|el|7, 8|
+|el|8|
 |debian|buster, bullseye|
 |fedora|all|
 |opensuse|all|
@@ -162,7 +162,6 @@ Apache-2.0
 
 I'd like to thank everybody that made contributions to this repository. It motivates me, improves the code and is just fun to collaborate.
 
-- [grzs](https://github.com/grzs)
 
 ## [Author Information](#author-information)
 
