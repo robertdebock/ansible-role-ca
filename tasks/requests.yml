@@ -62,7 +62,7 @@
 
 # revoke
 - name: check whether certificate file exists
-  stat:
+  ansible.builtin.stat:
     path: "{{ ca_path }}/{{ ca_certs_path }}/{{ request.name | default(request) }}.crt"
   register: check_certfile
 

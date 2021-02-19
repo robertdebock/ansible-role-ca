@@ -20,7 +20,7 @@
     - ca_own_root | bool
 
 - name: set path for CA
-  set_fact:
+  ansible.builtin.set_fact:
     ca_path: "{{ ca_openssl_path }}/{{ ca_common_name }}"
     ca_filename: ca
 
@@ -37,7 +37,7 @@
     - ca_init | bool
 
 - name: ensure publication location exists
-  file:
+  ansible.builtin.file:
     path: "{{ ca_publication_location }}"
     state: directory
     mode: "755"
@@ -47,7 +47,7 @@
     - ca_publication_location is defined
 
 - name: handle requests
-  include_tasks: requests.yml
+  ansible.builtin.include_tasks: requests.yml
   loop: "{{ ca_requests }}"
   loop_control:
     loop_var: request

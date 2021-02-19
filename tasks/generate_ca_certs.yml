@@ -1,6 +1,6 @@
 ---
 - name: set root CA path
-  set_fact:
+  ansible.builtin.set_fact:
     ca_root_path: "{{ ca_path }}/rootCA"
 
 - name: generate root ca certificate signing request
@@ -50,7 +50,7 @@
   register: _cacert
 
 - name: create ca chain
-  copy:
+  ansible.builtin.copy:
     content: "{{ _cacert.content | b64decode }}{{ _cacert_root.content | b64decode }}"
     dest: "{{ ca_path }}/{{ ca_certificate_path }}"
     mode: "0644"
