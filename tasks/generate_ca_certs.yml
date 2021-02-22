@@ -16,7 +16,7 @@
     state_or_province_name: "{{ ca_state_or_province_name | default(omit) }}"
 
 - name: generate root ca certificate
-  command:
+  ansible.builtin.command:
     chdir: "{{ ca_root_path }}"
     cmd: "openssl ca {{ ca_root_cert_params }}"
     creates: "{{ ca_root_path }}/{{ ca_root_certificate_path }}"
@@ -39,7 +39,7 @@
     state_or_province_name: "{{ ca_state_or_province_name | default(omit) }}"
 
 - name: generate ca certificate
-  command:
+  ansible.builtin.command:
     chdir: "{{ ca_root_path }}"
     cmd: "openssl ca {{ ca_cert_params }}"
     creates: "{{ ca_root_path }}/{{ ca_certificate_path }}"

@@ -45,7 +45,7 @@
         mode: "0644"
 
     - name: generate requested certificate
-      command:
+      ansible.builtin.command:
         chdir: "{{ ca_path }}"
         cmd: "openssl ca {{ ca_client_cert_params }}"
         creates: "{{ ca_path }}/{{ ca_certs_path }}/{{ request.name | default(request) }}.crt"
@@ -68,14 +68,14 @@
 
 - block:
     - name: revoke certificate
-      command:
+      ansible.builtin.command:
         chdir: "{{ ca_path }}"
         cmd: "openssl ca {{ ca_client_cert_revoke_params }}"
       register: revoke_result
       ignore_errors: True
 
     - name: update crl
-      command:
+      ansible.builtin.command:
         chdir: "{{ ca_path }}"
         cmd: "openssl ca {{ ca_crl_params }}"
 
