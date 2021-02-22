@@ -2,7 +2,7 @@
 # issue
 - block:
     - name: upload requested key
-      copy:
+      ansible.builtin.copy:
         src: "{{ request.upload_keyfile }}"
         dest: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ request.name | default(request) }}.pem"
         mode: "0644"
@@ -10,7 +10,7 @@
         - request.upload_keyfile is defined
 
     - name: copy requested key
-      copy:
+      ansible.builtin.copy:
         remote_src: yes
         src: "{{ request.keyfile_path }}"
         dest: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ request.name | default(request) }}.pem"
@@ -39,7 +39,7 @@
         organizational_unit_name: "{{ request.organizational_unit_name | default(omit) }}"
 
     - name: generate requested certificate extension file
-      template:
+      ansible.builtin.template:
         src: extensions.cnf.j2
         dest: "{{ ca_path }}/{{ ca_extfiles_path }}/{{ request.name | default(request) }}.cnf"
         mode: "0644"
@@ -51,7 +51,7 @@
         creates: "{{ ca_path }}/{{ ca_certs_path }}/{{ request.name | default(request) }}.crt"
 
     - name: publish certificate
-      copy:
+      ansible.builtin.copy:
         src: "{{ ca_path }}/{{ ca_certs_path }}/{{ request.name | default(request) }}.crt"
         dest: "{{ ca_publication_location }}/{{ request.name | default(request) }}.crt"
         mode: "644"
@@ -80,7 +80,7 @@
         cmd: "openssl ca {{ ca_crl_params }}"
 
     - name: ensure certificate file is absent
-      file:
+      ansible.builtin.file:
         path: "{{ ca_path }}/{{ ca_certs_path }}/{{ request.name | default(request) }}.crt"
         state: absent
       when:
