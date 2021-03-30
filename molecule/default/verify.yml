@@ -20,7 +20,7 @@
 
   post_tasks:
     - name: check if key exists
-      stat:
+      ansible.builtin.stat:
         path: "{{ item }}"
       loop:
         - /ca/example.com/certs/my_ca.example.com.crt
