@@ -8,3 +8,4 @@ roles:
   - name: robertdebock.python_pip
 collections:
   - name: ansible.posix
+  - name: community.crypto
