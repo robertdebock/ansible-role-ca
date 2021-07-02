@@ -4,7 +4,8 @@
 _ca_openssl_path:
   Alpine: /etc/ssl
   Debian: /etc/ssl
-  RedHat: /etc/pki/tls
+  RedHat: &RHEL /etc/pki/tls
+  Rocky: *RHEL
   Suse: /etc/ssl
 
 # config file name
