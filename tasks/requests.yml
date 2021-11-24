@@ -22,7 +22,7 @@
       community.crypto.openssl_privatekey:
         path: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ request.name | default(request) }}.pem"
         passphrase: "{{ request.passphrase | default(omit) }}"
-        cipher: "{{ request.cipher | default(omit) }}"
+        cipher: "auto"
       when:
         - request.upload_keyfile is not defined
         - request.keyfile_path is not defined
