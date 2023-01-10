@@ -21,6 +21,9 @@
         - request.keyfile_path is defined
 
     - name: Generate requested key
+      when:
+        - request.upload_keyfile is not defined
+        - request.keyfile_path is not defined
       block:
         - name: Generate requested key (passphrase set)
           community.crypto.openssl_privatekey:
@@ -35,9 +38,6 @@
             path: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ request.name | default(request) }}.pem"
           when:
             - request.passphrase is not defined
-      when:
-        - request.upload_keyfile is not defined
-        - request.keyfile_path is not defined
 
     - name: Generate requested certificate signing request
       community.crypto.openssl_csr:
