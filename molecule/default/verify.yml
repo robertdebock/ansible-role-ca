@@ -10,7 +10,7 @@
       ca_common_name: example.com
       ca_requests:
         - "{{ ansible_fqdn }}"
-        - name: my_ca.example.com
+        - name: My_ca.example.com
           passphrase: WoNtT3L1
           cipher: aes256
           country_name: NL
@@ -19,7 +19,7 @@
           organizational_unit_name: Department X
 
   post_tasks:
-    - name: check if key exists
+    - name: Check if key exists
       ansible.builtin.stat:
         path: "{{ item }}"
       loop:
