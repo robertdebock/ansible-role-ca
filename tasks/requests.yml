@@ -4,7 +4,7 @@
   when:
     - (request.state is not defined) or (request.state == 'present')
   block:
-    - name: Upload requested key
+    - name: requests | Upload requested key
       ansible.builtin.copy:
         src: "{{ request.upload_keyfile }}"
         dest: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ request.name | default(request) }}.pem"
