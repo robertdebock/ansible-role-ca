@@ -10,7 +10,7 @@
       ca_common_name: example.com
       ca_requests:
         - "{{ ansible_fqdn }}"
-        - name: My_ca.example.com
+        - name: my_ca.example.com
           passphrase: WoNtT3L1
           cipher: aes256
           country_name: NL
