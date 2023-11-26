@@ -1,4 +1,4 @@
-# Ansible role [ca](#ca)
+# [Ansible role ca](#ca)
 
 Install and configure a certificate authority on your system.
 
