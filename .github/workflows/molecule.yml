@@ -7,8 +7,8 @@ name: Ansible Molecule
 
 on:
   push:
-    tags_ignore:
-      - '*'
+    branches:
+      - master
   pull_request:
   schedule:
     - cron: '5 3 3 * *'
@@ -49,8 +49,6 @@ jobs:
             tag: "latest"
           - image: "ubuntu"
             tag: "focal"
-          - image: "ubuntu"
-            tag: "bionic"
     steps:
       - name: checkout
         uses: actions/checkout@v3
