@@ -14,8 +14,8 @@ This example is taken from [`molecule/default/converge.yml`](https://github.com/
 ---
 - name: Converge
   hosts: all
-  become: yes
-  gather_facts: yes
+  become: true
+  gather_facts: true
 
   roles:
     - role: robertdebock.ca
@@ -27,8 +27,8 @@ The machine needs to be prepared. In CI this is done using [`molecule/default/pr
 ---
 - name: Prepare
   hosts: all
-  gather_facts: no
-  become: yes
+  gather_facts: false
+  become: true
 
   roles:
     - role: robertdebock.bootstrap
@@ -53,11 +53,11 @@ The default values for the variables are set in [`defaults/main.yml`](https://gi
 # defaults file for ca
 
 # set ca_init: 'yes' to create CA
-ca_init: yes
+ca_init: true
 
 # ca_own_root: 'yes' if you want to have yout own root CA.
 # if no, set ca_certificate_path manually
-ca_own_root: yes
+ca_own_root: true
 
 # A passphrase for the CA key.
 ca_passphrase: SuP3rS3creT
