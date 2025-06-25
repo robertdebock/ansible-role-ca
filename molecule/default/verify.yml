@@ -11,6 +11,9 @@
       ca_requests:
         - "{{ ansible_fqdn }}"
         - name: my_ca.example.com
+          subject_alt_name:
+            - "IP:{{ ansible_host }}"
+            - "DNS:my_ca.example.com"
           passphrase: WoNtT3L1
           cipher: aes256
           country_name: NL
