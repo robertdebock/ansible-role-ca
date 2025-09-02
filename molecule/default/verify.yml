@@ -5,7 +5,7 @@
   gather_facts: true
 
   roles:
-    - role: ansible-role-ca
+    - role: robertdebock.ca
       ca_openssl_path: /ca
       ca_common_name: example.com
       ca_requests:
