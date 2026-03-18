@@ -9,7 +9,7 @@
       ca_openssl_path: /ca
       ca_common_name: example.com
       ca_requests:
-        - "{{ ansible_fqdn }}"
+        - "{{ ansible_facts['fqdn'] }}"
         - name: my_ca.example.com
           passphrase: WoNtT3L1
           cipher: aes256
