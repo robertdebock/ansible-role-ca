@@ -4,8 +4,8 @@
 
 # These extensions are added when 'ca' signs a request.
 
-{% if item.extensions is defined %}
-{% for ext in item.extensions %}{{ ext }}{% endfor %}
+{% if request.extensions is defined %}
+{% for ext in request.extensions %}{{ ext }}{% endfor %}
 {% endif %}
 
 # This goes against PKIX guidelines but some CAs do it and some software
@@ -57,3 +57,15 @@ authorityKeyIdentifier=keyid,issuer
 
 # This is required for TSA certificates.
 # extendedKeyUsage = critical,timeStamping
+
+{% if request.subject_alt_name is defined and request.subject_alt_name | length > 0 %}
+subjectAltName = @alt_names
+
+[alt_names]
+{% set indexes = {} %}
+{% for san in request.subject_alt_name %}
+{% set type, value = san.split(':', 1) %}
+{% set _ = indexes.update({ type: (indexes[type] | default(0)) + 1 }) %}
+{{ type }}.{{ indexes[type] }} = {{ value }}
+{% endfor %}
+{% endif %}

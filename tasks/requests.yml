@@ -46,6 +46,8 @@
         privatekey_path: "{{ ca_path }}/{{ ca_subject_keys_path }}/{{ request.name | default(request) }}.pem"
         privatekey_passphrase: "{{ request.passphrase | default(omit) }}"
         common_name: "{{ request.name | default(request) }}"
+        subject_alt_name: "{{ request.subject_alt_name | default(omit) }}"
+        subject_alt_name_critical: "{{ true if (request.subject_alt_name | default([])) | length > 0 else false }}"
         country_name: "{{ request.country_name | default(omit) }}"
         email_address: "{{ request.email_address | default(omit) }}"
         organization_name: "{{ request.organization_name | default(omit) }}"
